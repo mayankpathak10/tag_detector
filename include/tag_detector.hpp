@@ -39,9 +39,6 @@ SOFTWARE.
 
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
-#include <sstream>
-#include <string>
-#include <vector>
 #include <ctime>
 #include <iostream>
 #include <opencv2/core/core.hpp>
@@ -50,10 +47,12 @@ SOFTWARE.
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv2/videoio/videoio.hpp>
+#include <sstream>
+#include <string>
+#include <vector>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "tag_detector/gaussian_size.h"
-
+// #include "tag_detector/gaussian_size.h"
 
 /**
  * @brief      Class for publisher node.
@@ -107,7 +106,7 @@ class subscriber_node {
    *
    * @return     Image containing filter.
    */
-  cv::Mat calcPSF(cv::Mat& outputImg, cv::Size filterSize, int R);  //NOLINT
+  cv::Mat calcPSF(cv::Mat& outputImg, cv::Size filterSize, int R);  // NOLINT
 
   /**
    * @brief      { Calculates FFT shift }
@@ -117,7 +116,7 @@ class subscriber_node {
    *
    * @return     { Image containing shift as pixel values }
    */
-  cv::Mat fftshift(const cv::Mat& inputImg, cv::Mat& outputImg);  //NOLINT
+  cv::Mat fftshift(const cv::Mat& inputImg, cv::Mat& outputImg);  // NOLINT
 
   /**
    * @brief      { Applies 2D filter }
@@ -128,7 +127,7 @@ class subscriber_node {
    *
    * @return     { Filtered Image }
    */
-  cv::Mat filter2DFreq(const cv::Mat& inputImg, cv::Mat& outputImg,  //NOLINT
+  cv::Mat filter2DFreq(const cv::Mat& inputImg, cv::Mat& outputImg,  // NOLINT
                        const cv::Mat& H);
 
   /**
@@ -140,8 +139,42 @@ class subscriber_node {
    *
    * @return     The wnr filter.
    */
-  cv::Mat calcWnrFilter(const cv::Mat& input_h_PSF, cv::Mat& output_G,  //NOLINT
+  cv::Mat calcWnrFilter(const cv::Mat& input_h_PSF,
+                        cv::Mat& output_G,  // NOLINT
                         double nsr);
-}
+
+  /**
+   * @brief      { To calculate angle }
+   *
+   * @param[in]   { Point1 }
+   * @param[in]   { Point2 }
+   * @param[in]   { Ref Point }
+   *
+   * @return     { angle }
+   */
+  double angle(cv::Point, cv::Point, cv::Point);
+
+  /**
+   * @brief      { finds squares in image }
+   *
+   * @param[in]  image    The image
+   * @param      squares  The squares matrix (empty)
+   *
+   * @return     { squares  }
+   */
+  std::vector<std::vector<cv::Point> > findSquares(
+     const cv::Mat& image, std::vector<std::vector<cv::Point>>& squares);
+
+  /**
+   * @brief      Draws squares.
+   *
+   * @param      image    The image
+   * @param[in]  squares  The squares
+   *
+   * @return     { image with sqaures}
+   */
+  cv::Mat drawSquares(
+    cv::Mat& image, const std::vector<std::vector<cv::Point> >& squares);
+};
 
 #endif  // INCLUDE_TAG_DETECTOR_HPP_

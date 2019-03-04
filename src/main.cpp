@@ -38,14 +38,14 @@ SOFTWARE.
 
 int kernel_size = 5;
 
-bool set_window_size(tag_detector::gaussian_size::Request  &req,  // NOLINT
-         tag_detector::gaussian_size::Response &res) {  // NOLINT
-  res.kernel_size = req.size;
-  kernel_size = req.size;
-  ROS_INFO("request: Gaussian Kernel Size = %ld", (int64)req.size);
-  ROS_INFO("sending back response: %ld", (int64)res.kernel_size);
-  return true;
-}
+// bool set_window_size(tag_detector::gaussian_size::Request  &req,  // NOLINT
+//          tag_detector::gaussian_size::Response &res) {  // NOLINT
+//   res.kernel_size = req.size;
+//   kernel_size = req.size;
+//   ROS_INFO("request: Gaussian Kernel Size = %ld", (int64)req.size);
+//   ROS_INFO("sending back response: %ld", (int64)res.kernel_size);
+//   return true;
+// }
 
 
 int main(int argc, char **argv) {
@@ -60,13 +60,8 @@ int main(int argc, char **argv) {
   image_transport::Publisher pub = it.advertise("/image_raw", 1);
   ROS_INFO_STREAM("Publisher for topic 'image_raw' created.");
 
-
-  ros::ServiceServer service =
-      n.advertiseService("/set_blur_window_size", set_window_size);
-  ROS_INFO("Service server to Change gaussian size created.");
-
   std::string video_source =
-      "/home/shivang/catkin_ws/src/tag_detector/data/4.mp4";
+      "/home/shivang/catkin_ws/src/tag_detector/data/2.mp4";
 
   ROS_DEBUG("Video Source Path: [%s]", video_source.c_str());
   cv::VideoCapture cap(video_source);
@@ -82,7 +77,7 @@ int main(int argc, char **argv) {
   if (!ros::ok()) ROS_FATAL_STREAM("ROS node not running...");
 
   ros::Rate loop_rate(5);
-  for (int i = 1; i < total_frames - 1; ++i) {
+  for (int i = 1; i < 50; ++i) {
     ROS_INFO("Reading Frame: %d , Gaussian Kernel Size: %d ", i, kernel_size);
 
     cv::Mat frame = publisher_node.readFrame(i, video_source);
