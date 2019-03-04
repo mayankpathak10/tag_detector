@@ -33,20 +33,40 @@ SOFTWARE.
  * @date 2019-03-04
  */
 
-
 #include "../include/tag_detector.hpp"
 
-
 int main(int argc, char **argv) {
-    publisher_node publisher_node;
-    sensor_msgs::ImagePtr msg;
+  publisher_node publisher_node;  // Class object created
 
-    ros::init(argc, argv, "pub_node");  // Node name
-    ros::NodeHandle n;  // Node Handle
+  ros::init(argc, argv, "pub_node");  // Node name
+  ros::NodeHandle n;                  // Node Handle
 
-    ros::Rate loop_rate(5);
+  std::string video_source =
+      "/home/shivang/catkin_ws/src/tag_detector/data/4.mp4";
+
+  ROS_DEBUG("Video Source Path: [%s]", video_source.c_str());
+  cv::VideoCapture cap(video_source);
+
+  if (!cap.isOpened()) {  // Check for invalid input
+    ROS_ERROR("Could not open or find the image");
+    return -1;
+  }
+
+  int total_frames = cap.get(CV_CAP_PROP_FRAME_COUNT);
+  ROS_INFO("Total frames in Video: %d", total_frames);
+
+  if (!ros::ok()) ROS_FATAL_STREAM("ROS node not running...");
+
+  ros::Rate loop_rate(5);
+  for (int i = 1; i < total_frames - 1; ++i) {
+    ROS_INFO("Reading Frame: %d , Gaussian Kernel Size: %d ", i, kernel_size);
+
+    cv::Mat frame = publisher_node.readFrame(i, video_source);
+    cv::Mat bw_image = publisher_node.apply_gaussian_blur(frame, kernel_size);
 
     ros::spinOnce();
-    loop_rate.sleep();
-    cap.release();
   }
+
+  loop_rate.sleep();
+  cap.release();
+}

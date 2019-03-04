@@ -50,9 +50,9 @@ matrix:
   # - name: "Bionic Beaver"
     # dist: bionic
     # env: ROS_DISTRO=melodic
-  - name: "Trusty jade"
-    dist: trusty
-    env: ROS_DISTRO=jade
+  # - name: "Trusty jade"
+  #   dist: trusty
+  #   env: ROS_DISTRO=jade
   - name: "Xenial kinetic"
     dist: xenial
     env: ROS_DISTRO=kinetic
