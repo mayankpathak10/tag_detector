@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/mayankpathak10/tag_detector.svg?branch=maste)](https://travis-ci.com/mayankpathak10/tag_detector) [![Coverage Status](https://coveralls.io/repos/github/mayankpathak10/tag_detector/badge.svg?branch=master)](https://coveralls.io/github/mayankpathak10/tag_detector?branch=master) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 
 ## Overview:
