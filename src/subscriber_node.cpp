@@ -52,6 +52,7 @@ cv::Mat mask;
 cv::Mat eq_img;
 int R = 2;
 int snr = 3000;
+int z = 1;
 subscriber_node subscriber_node;
 
 double subscriber_node::angle(cv::Point pt1, cv::Point pt2, cv::Point pt0) {
@@ -258,6 +259,9 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
     cv::Mat Output = subscriber_node.drawSquares(Copy2, squares);
 
     cv::imshow("view2", Output);
+    auto s = std::to_string(z);
+    cv::imwrite("src/tag_detector/frames/dark/" + s + ".jpg", Output);
+    z += 1;
     cv::waitKey(20);
 
     std::clock_t c_end = std::clock();
