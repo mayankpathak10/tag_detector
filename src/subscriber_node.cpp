@@ -143,6 +143,9 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
   std::vector<std::vector<cv::Point> > squares;
   ROS_DEBUG("Came into imageCallback");
   try {
+    // time clock variable
+    std::clock_t c_start = std::clock();
+
     cv_bridge::toCvShare(msg, "mono8")->image;
     cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::MONO8);
     // sub_image = cv_ptr->image.clone();
@@ -157,6 +160,11 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 
     cv::imshow("view2", Output);
     cv::waitKey(20);
+
+    std::clock_t c_end = std::clock();
+
+    double time_elapsed_ms = 1000.0 * (c_end - c_start) / CLOCKS_PER_SEC;
+    ROS_INFO("CPU Computation Time per Frame: %f %s", time_elapsed_ms, "ms");
   } catch (cv_bridge::Exception& e) {
     ROS_ERROR("Could not convert from '%s' to 'mono8'.", msg->encoding.c_str());
   }
