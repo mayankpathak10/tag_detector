@@ -50,7 +50,10 @@ cv_bridge::CvImagePtr cv_ptr;
 cv::Mat sub_image;
 cv::Mat mask;
 cv::Mat eq_img;
+int R = 2;
+int snr = 3000;
 subscriber_node subscriber_node;
+
 double subscriber_node::angle(cv::Point pt1, cv::Point pt2, cv::Point pt0) {
   double dx1 = pt1.x - pt0.x;
   double dy1 = pt1.y - pt0.y;
@@ -139,6 +142,74 @@ cv::Mat subscriber_node::drawSquares(
   return image;
 }
 
+cv::Mat subscriber_node::calcPSF(cv::Mat& outputImg, cv::Size filterSize, int R) {
+  cv::Mat h(filterSize, CV_32F, cv::Scalar(0));
+  cv::Point point(filterSize.width / 2, filterSize.height / 2);
+  cv::circle(h, point, R, 255, -1, 8);
+  cv::Scalar summa = sum(h);
+  outputImg = h / summa[0];
+
+  return outputImg;
+}
+
+cv::Mat subscriber_node::fftshift(const cv::Mat& inputImg, cv::Mat& outputImg) {
+  outputImg = inputImg.clone();
+  int cx = outputImg.cols / 2;
+  int cy = outputImg.rows / 2;
+  cv::Mat q0(outputImg, cv::Rect(0, 0, cx, cy));
+  cv::Mat q1(outputImg, cv::Rect(cx, 0, cx, cy));
+  cv::Mat q2(outputImg, cv::Rect(0, cy, cx, cy));
+  cv::Mat q3(outputImg, cv::Rect(cx, cy, cx, cy));
+  cv::Mat tmp;
+  q0.copyTo(tmp);
+  q3.copyTo(q0);
+  tmp.copyTo(q3);
+  q1.copyTo(tmp);
+  q2.copyTo(q1);
+  tmp.copyTo(q2);
+
+  return outputImg;
+}
+
+cv::Mat subscriber_node::filter2DFreq(const cv::Mat& inputImg, cv::Mat& outputImg,
+                     const cv::Mat& H) {
+  cv::Mat planes[2] = {cv::Mat_<float>(inputImg.clone()),
+                       cv::Mat::zeros(inputImg.size(), CV_32F)};
+  cv::Mat complexI;
+  cv::merge(planes, 2, complexI);
+  cv::dft(complexI, complexI, cv::DFT_SCALE);
+  cv::Mat planesH[2] = {cv::Mat_<float>(H.clone()),
+                        cv::Mat::zeros(H.size(), CV_32F)};
+  cv::Mat complexH;
+  cv::merge(planesH, 2, complexH);
+  cv::Mat complexIH;
+  cv::mulSpectrums(complexI, complexH, complexIH, 0);
+  cv::idft(complexIH, complexIH);
+  cv::split(complexIH, planes);
+  outputImg = planes[0];
+
+  return outputImg;
+}
+
+cv::Mat subscriber_node::calcWnrFilter(const cv::Mat& input_h_PSF, cv::Mat& output_G,
+                      double nsr) {
+  cv::Mat h_PSF_shifted;
+  subscriber_node::fftshift(input_h_PSF, h_PSF_shifted);
+  cv::Mat planes[2] = {cv::Mat_<float>(h_PSF_shifted.clone()),
+                       cv::Mat::zeros(h_PSF_shifted.size(), CV_32F)};
+  cv::Mat complexI;
+  cv::merge(planes, 2, complexI);
+  cv::dft(complexI, complexI);
+  cv::split(complexI, planes);
+  cv::Mat denom;
+  pow(abs(planes[0]), 2, denom);
+  denom += nsr;
+  cv::divide(planes[0], denom, output_G);
+
+  return output_G;
+}
+
+
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
   std::vector<std::vector<cv::Point> > squares;
   ROS_DEBUG("Came into imageCallback");
@@ -148,14 +219,42 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 
     cv_bridge::toCvShare(msg, "mono8")->image;
     cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::MONO8);
-    // sub_image = cv_ptr->image.clone();
     cv_ptr->image.copyTo(sub_image);
 
     cv::Mat Copy2;
     cv::cvtColor(sub_image, Copy2, cv::COLOR_GRAY2BGR);
+    cv::Mat imgIn = sub_image;
+    cv::Mat imgOut;
 
+    // it needs to process even image only
+    cv::Rect roi = cv::Rect(0, 0, imgIn.cols & -2, imgIn.rows & -2);
+    // Hw calculation (start)
+    cv::Mat Hw, h;
+    cv::Mat filter = subscriber_node.calcPSF(h, roi.size(), R);
+    imgOut = subscriber_node.calcWnrFilter(filter, Hw, 1.0 / double(snr));
+    // Hw calculation (stop)
+    // filtering (start)
+    imgOut = subscriber_node.filter2DFreq(imgIn(roi), imgOut, Hw);
+    // filtering (stop)
+    imgOut.convertTo(imgOut, CV_8U);
+    cv::normalize(imgOut, imgOut, 0, 255, cv::NORM_MINMAX);
+    // imwrite("result.jpg", imgOut);
 
-    squares = subscriber_node.findSquares(Copy2, squares);
+    // cv::Mat eq_img;
+    cv::equalizeHist(imgOut, ::eq_img);
+
+    // compute mask (you could use a simple threshold if the image is always as
+    // good as the one you provided) cv::threshold(eq_img, mask, 10 , 255,
+    // CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
+    cv::adaptiveThreshold(eq_img, mask, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C,
+                          CV_THRESH_BINARY_INV, 31, 0);
+
+    cv::cvtColor(imgOut, imgOut, cv::COLOR_GRAY2BGR);
+    // cv::imshow("view",imgOut);
+    cv::cvtColor(mask, mask, cv::COLOR_GRAY2BGR);
+    cv::cvtColor(::eq_img, ::eq_img, cv::COLOR_GRAY2BGR);
+
+    squares = subscriber_node.findSquares(mask, squares);
     cv::Mat Output = subscriber_node.drawSquares(Copy2, squares);
 
     cv::imshow("view2", Output);
