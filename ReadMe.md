@@ -26,3 +26,9 @@ __Mayank Pathak:__ Graduate Student in M.Eng., Robotics, working as Teaching Ass
 3. ROS service server is then implemented in Publisher Node.
 4. Fast Fourier Transform (FFT) is then used to Deblur the image.
 6. Quality is assured by delivering Unit Tests for overall source code and full coverage in coveralls. 
+
+The UML diagrams for the project are as follows:
+### UML Activity Diagram
+![activity_diag](https://github.com/mayankpathak10/tag_detector/blob/master/UML/initial/tag_detector_ActivityDiagram.jpeg)
+### UML Class Diagram
+![class_diag](https://github.com/mayankpathak10/tag_detector/blob/master/UML/initial/tag_detector_Class_diagram.jpeg)
