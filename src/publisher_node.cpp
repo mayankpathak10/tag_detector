@@ -43,7 +43,17 @@ SOFTWARE.
  *
  * @return     { frame }
  */
-cv::Mat publisher_node::readFrame(int frame_number, std::string& video_source) {}
+cv::Mat publisher_node::readFrame(int frame_number, std::string video_source) {
+  cv::Mat frame;  // matrix to store input frame
+  // Video Object to read frame
+  cv::VideoCapture cap(video_source);
+  ROS_DEBUG("Reading Frame #%d", frame_number);
+  cap.set(cv::CAP_PROP_POS_FRAMES, frame_number);
+  cap >> frame;
+  cv::resize(frame, frame, cv::Size(), 0.50, 0.50);
+  cap.release();
+  return frame;
+}
 
 /**
  * @brief      { Applies gaussian blur to image }
@@ -53,4 +63,11 @@ cv::Mat publisher_node::readFrame(int frame_number, std::string& video_source) {
  *
  * @return     { Blurred Image }
  */
-cv::Mat publisher_node::apply_gaussian_blur(cv::Mat image, int kernel_size) {}
+cv::Mat publisher_node::apply_gaussian_blur(cv::Mat image, int kernel_size) {
+  cv::Mat bw_image;
+  cv::cvtColor(image, bw_image, cv::COLOR_BGR2GRAY);
+  cv::Mat blur_image;
+  cv::GaussianBlur(bw_image, blur_image, cv::Size(kernel_size, kernel_size), 0,
+                   0);
+  return blur_image;
+}

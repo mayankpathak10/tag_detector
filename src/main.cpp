@@ -37,9 +37,15 @@ SOFTWARE.
 
 int main(int argc, char **argv) {
   publisher_node publisher_node;  // Class object created
+  sensor_msgs::ImagePtr msg;  // variable to store image for publishing
 
   ros::init(argc, argv, "pub_node");  // Node name
   ros::NodeHandle n;                  // Node Handle
+
+  image_transport::ImageTransport it(n);  // Image Node Handle
+  // Publisher for image created
+  image_transport::Publisher pub = it.advertise("/image_raw", 1);
+  ROS_INFO_STREAM("Publisher for topic 'image_raw' created.");
 
   std::string video_source =
       "/home/shivang/catkin_ws/src/tag_detector/data/4.mp4";
@@ -63,6 +69,10 @@ int main(int argc, char **argv) {
 
     cv::Mat frame = publisher_node.readFrame(i, video_source);
     cv::Mat bw_image = publisher_node.apply_gaussian_blur(frame, kernel_size);
+
+    msg =
+        cv_bridge::CvImage(std_msgs::Header(), "mono8", bw_image).toImageMsg();
+    pub.publish(msg);
 
     ros::spinOnce();
   }
