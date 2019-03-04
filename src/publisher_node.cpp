@@ -35,25 +35,6 @@ SOFTWARE.
 
 #include "../include/tag_detector.hpp"
 
-/**
- * @brief      Reads a frame.
- *
- * @param[in]  frame_number  The frame number
- * @param[in]  video_source  The video source
- *
- * @return     { frame }
- */
-cv::Mat publisher_node::readFrame(int frame_number, std::string video_source) {
-  cv::Mat frame;  // matrix to store input frame
-  // Video Object to read frame
-  cv::VideoCapture cap(video_source);
-  ROS_DEBUG("Reading Frame #%d", frame_number);
-  cap.set(cv::CAP_PROP_POS_FRAMES, frame_number);
-  cap >> frame;
-  cv::resize(frame, frame, cv::Size(), 0.50, 0.50);
-  cap.release();
-  return frame;
-}
 
 /**
  * @brief      { Applies gaussian blur to image }
