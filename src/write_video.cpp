@@ -36,15 +36,19 @@ SOFTWARE.
 #include "../include/tag_detector.hpp"
 
 int main() { 
-  std::cout << "Writing Video from frames at Path: " << std::endl;
-  cv::VideoCapture in_capture("src/tag_detector/frames/dark/%d.jpg");
+  std::string path = ros::package::getPath("tag_detector"); //Returns path of the package
+  std::string frames_path = "/results/videos";
+  std::string video_path = "/results/frames";
+  std::cout << "Writing Video from frames at Path: " << path + filePath << std::endl;
+
+  cv::VideoCapture in_capture(frames_path"/dark/%d.jpg");
   cv::Mat img;
   in_capture.read(img);
   std::cout << "Image Shape : " << img.size() << std::endl;
   auto frame_height = img.size().height;
   auto frame_width = img.size().width;
 
-  cv::VideoWriter out_capture("src/tag_detector/results/Out1video.avi",
+  cv::VideoWriter out_capture(video_path"/Out1video.avi",
                               CV_FOURCC('M', 'J', 'P', 'G'), 30,
                               cv::Size(frame_width, frame_height));
 
