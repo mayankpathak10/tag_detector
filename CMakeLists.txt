@@ -3,25 +3,92 @@ project(tag_detector)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
+# Add project cmake modules to path.
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+
+## Compile as C++11, supported in ROS Kinetic and newer
+# add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
+
 find_package(catkin REQUIRED COMPONENTS
-  roscpp
-  rospy
-  std_msgs
+	cv_bridge
+	image_transport
+	roscpp
+	rospy
+	roslint
+	message_generation
+	std_msgs)
+
+find_package(OpenCV REQUIRED)
+
+# Print some message showing some of them
+message(STATUS "OpenCV library status:")
+message(STATUS "    version: ${OpenCV_VERSION}")
+message(STATUS "    libraries: ${OpenCV_LIBS}")
+message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
+
+
+
+if(CMAKE_VERSION VERSION_LESS "2.8.11")
+  # Add OpenCV headers location to your include paths
+  include_directories(${OpenCV_INCLUDE_DIRS})
+endif()
+
+
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
-## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
 
+# We probably don't want this to run on every build.
+option(COVERAGE "Generate Coverage Data" OFF)
 
-## Uncomment this if the package has a setup.py. This macro ensures
-## modules and global scripts declared therein get installed
-## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+if (COVERAGE)
+    include(CodeCoverage)
+    set(LCOV_REMOVE_EXTRA "'vendor/*'")
+    setup_target_for_coverage(code_coverage test/cpp-test coverage)
+    set(COVERAGE_SRCS src/main.cpp)
 
+    SET(CMAKE_CXX_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+    SET(CMAKE_C_FLAGS "-g -O0 -fprofile-arcs -ftest-coverage")
+    SET(CMAKE_EXE_LINKER_FLAGS "-fprofile-arcs -ftest-coverage")
+else()
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra -Wpedantic -g")
+endif()
+
+include(CMakeToolsHelpers OPTIONAL)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 14)
+
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES tag_detector
+  CATKIN_DEPENDS 
+        image_transport
+        roscpp 
+        rospy 
+        #geometry_msgs 
+        std_msgs 
+        sensor_msgs 
+        message_generation
+        cv_bridge
+#  DEPENDS system_lib   
+)
+
+add_executable(pub_node src/main.cpp
+			   src/publisher_node.cpp)
+
+add_executable(subs_node src/subscriber_node.cpp )
+			  # include/gaussian_size.h)
+
+target_link_libraries(pub_node ${OpenCV_LIBS} 
+				  ${catkin_LIBRARIES})
+target_link_libraries(subs_node ${OpenCV_LIBS} 
+				  ${catkin_LIBRARIES})
 ################################################
 ## Declare ROS messages, services and actions ##
 ################################################
@@ -102,12 +169,6 @@ find_package(catkin REQUIRED COMPONENTS
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES tag_detector
-#  CATKIN_DEPENDS roscpp rospy std_msgs
-#  DEPENDS system_lib
-)
 
 ###########
 ## Build ##
@@ -115,10 +176,7 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
-# include
-  ${catkin_INCLUDE_DIRS}
-)
+
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
