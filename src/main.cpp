@@ -35,6 +35,19 @@ SOFTWARE.
 
 #include "../include/tag_detector.hpp"
 
+
+int kernel_size = 5;
+
+bool set_window_size(tag_detector::gaussian_size::Request  &req,  // NOLINT
+         tag_detector::gaussian_size::Response &res) {  // NOLINT
+  res.kernel_size = req.size;
+  kernel_size = req.size;
+  ROS_INFO("request: Gaussian Kernel Size = %ld", (int64)req.size);
+  ROS_INFO("sending back response: %ld", (int64)res.kernel_size);
+  return true;
+}
+
+
 int main(int argc, char **argv) {
   publisher_node publisher_node;  // Class object created
   sensor_msgs::ImagePtr msg;  // variable to store image for publishing
@@ -46,6 +59,11 @@ int main(int argc, char **argv) {
   // Publisher for image created
   image_transport::Publisher pub = it.advertise("/image_raw", 1);
   ROS_INFO_STREAM("Publisher for topic 'image_raw' created.");
+
+
+  ros::ServiceServer service =
+      n.advertiseService("/set_blur_window_size", set_window_size);
+  ROS_INFO("Service server to Change gaussian size created.");
 
   std::string video_source =
       "/home/shivang/catkin_ws/src/tag_detector/data/4.mp4";
