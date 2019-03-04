@@ -49,6 +49,12 @@ int main(int argc, char** argv) {
   ros::init(argc, argv, "subs_node");
   ros::NodeHandle nh;
 
+  image_transport::ImageTransport it(nh);
+  ROS_INFO("before imageCallback");
+
+  image_transport::Subscriber sub =
+      it.subscribe("/image_raw", 1, imageCallback);
+  ROS_INFO("Came Out of imageCallback");
   ros::spin();
   cv::destroyAllWindows();
 }
