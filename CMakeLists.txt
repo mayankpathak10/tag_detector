@@ -64,6 +64,21 @@ include(CMakeToolsHelpers OPTIONAL)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 14)
 
+
+## Generate services in the 'srv' folder
+ add_service_files(
+   FILES
+   gaussian_size.srv
+ )
+
+
+
+ generate_messages(
+   DEPENDENCIES
+   std_msgs
+ )
+
+
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES tag_detector

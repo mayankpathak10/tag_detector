@@ -52,7 +52,7 @@ SOFTWARE.
 #include <vector>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-// #include "tag_detector/gaussian_size.h"
+#include "tag_detector/gaussian_size.h"
 
 /**
  * @brief      Class for publisher node.
