@@ -1,0 +1,188 @@
+\hypertarget{classsubscriber__node}{}\section{subscriber\+\_\+node Class Reference}
+\label{classsubscriber__node}\index{subscriber\+\_\+node@{subscriber\+\_\+node}}
+
+
+Class for subscriber node.  
+
+
+
+
+{\ttfamily \#include $<$tag\+\_\+detector.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+cv\+::\+Mat \hyperlink{classsubscriber__node_a59aeb819e9540645b4cc14b4c3c91c6c}{calc\+P\+SF} (cv\+::\+Mat \&output\+Img, cv\+::\+Size filter\+Size, int R)
+\begin{DoxyCompactList}\small\item\em Calculates the P\+SF. \end{DoxyCompactList}\item 
+cv\+::\+Mat \hyperlink{classsubscriber__node_a2ef8da4f3e87be4fec6dc52e0f359cd4}{fftshift} (const cv\+::\+Mat \&input\+Img, cv\+::\+Mat \&output\+Img)
+\begin{DoxyCompactList}\small\item\em \{ Calculates F\+FT shift \} \end{DoxyCompactList}\item 
+cv\+::\+Mat \hyperlink{classsubscriber__node_a36eaa05a731a6cd5168c41f7cd2acb80}{filter2\+D\+Freq} (const cv\+::\+Mat \&input\+Img, cv\+::\+Mat \&output\+Img, const cv\+::\+Mat \&H)
+\begin{DoxyCompactList}\small\item\em \{ Applies 2D filter \} \end{DoxyCompactList}\item 
+cv\+::\+Mat \hyperlink{classsubscriber__node_a52f5fe8fbe6a886fa5b6f0b36c62367e}{calc\+Wnr\+Filter} (const cv\+::\+Mat \&input\+\_\+h\+\_\+\+P\+SF, cv\+::\+Mat \&output\+\_\+G, double nsr)
+\begin{DoxyCompactList}\small\item\em Calculates the wnr filter. \end{DoxyCompactList}\item 
+double \hyperlink{classsubscriber__node_acdf1620562e8b05d155e3a58e41c28d6}{angle} (cv\+::\+Point, cv\+::\+Point, cv\+::\+Point)
+\begin{DoxyCompactList}\small\item\em \{ To calculate angle \} \end{DoxyCompactList}\item 
+std\+::vector$<$ std\+::vector$<$ cv\+::\+Point $>$ $>$ \hyperlink{classsubscriber__node_aa0685059ef9148803de8e8633f46765b}{find\+Squares} (const cv\+::\+Mat \&image, std\+::vector$<$ std\+::vector$<$ cv\+::\+Point $>$$>$ \&squares)
+\begin{DoxyCompactList}\small\item\em \{ finds squares in image \} \end{DoxyCompactList}\item 
+cv\+::\+Mat \hyperlink{classsubscriber__node_aa1a17de5fe19b124d6e62e691e508746}{draw\+Squares} (cv\+::\+Mat \&image, const std\+::vector$<$ std\+::vector$<$ cv\+::\+Point $>$ $>$ \&squares)
+\begin{DoxyCompactList}\small\item\em Draws squares. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Class for subscriber node. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classsubscriber__node_acdf1620562e8b05d155e3a58e41c28d6}\label{classsubscriber__node_acdf1620562e8b05d155e3a58e41c28d6}} 
+\index{subscriber\+\_\+node@{subscriber\+\_\+node}!angle@{angle}}
+\index{angle@{angle}!subscriber\+\_\+node@{subscriber\+\_\+node}}
+\subsubsection{\texorpdfstring{angle()}{angle()}}
+{\footnotesize\ttfamily double subscriber\+\_\+node\+::angle (\begin{DoxyParamCaption}\item[{cv\+::\+Point}]{pt1,  }\item[{cv\+::\+Point}]{pt2,  }\item[{cv\+::\+Point}]{pt0 }\end{DoxyParamCaption})}
+
+
+
+\{ To calculate angle \} 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em \{} & Point1 \} \\
+\hline
+\mbox{\tt in}  & {\em \{} & Point2 \} \\
+\hline
+\mbox{\tt in}  & {\em \{} & Ref Point \}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\{ angle \} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classsubscriber__node_a59aeb819e9540645b4cc14b4c3c91c6c}\label{classsubscriber__node_a59aeb819e9540645b4cc14b4c3c91c6c}} 
+\index{subscriber\+\_\+node@{subscriber\+\_\+node}!calc\+P\+SF@{calc\+P\+SF}}
+\index{calc\+P\+SF@{calc\+P\+SF}!subscriber\+\_\+node@{subscriber\+\_\+node}}
+\subsubsection{\texorpdfstring{calc\+P\+S\+F()}{calcPSF()}}
+{\footnotesize\ttfamily cv\+::\+Mat subscriber\+\_\+node\+::calc\+P\+SF (\begin{DoxyParamCaption}\item[{cv\+::\+Mat \&}]{output\+Img,  }\item[{cv\+::\+Size}]{filter\+Size,  }\item[{int}]{R }\end{DoxyParamCaption})}
+
+
+
+Calculates the P\+SF. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em output\+Img} & The output image \\
+\hline
+\mbox{\tt in}  & {\em filter\+Size} & The filter size \\
+\hline
+\mbox{\tt in}  & {\em R} & \{ radius for filter circle \}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Image containing filter. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classsubscriber__node_a52f5fe8fbe6a886fa5b6f0b36c62367e}\label{classsubscriber__node_a52f5fe8fbe6a886fa5b6f0b36c62367e}} 
+\index{subscriber\+\_\+node@{subscriber\+\_\+node}!calc\+Wnr\+Filter@{calc\+Wnr\+Filter}}
+\index{calc\+Wnr\+Filter@{calc\+Wnr\+Filter}!subscriber\+\_\+node@{subscriber\+\_\+node}}
+\subsubsection{\texorpdfstring{calc\+Wnr\+Filter()}{calcWnrFilter()}}
+{\footnotesize\ttfamily cv\+::\+Mat subscriber\+\_\+node\+::calc\+Wnr\+Filter (\begin{DoxyParamCaption}\item[{const cv\+::\+Mat \&}]{input\+\_\+h\+\_\+\+P\+SF,  }\item[{cv\+::\+Mat \&}]{output\+\_\+G,  }\item[{double}]{nsr }\end{DoxyParamCaption})}
+
+
+
+Calculates the wnr filter. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em input\+\_\+h\+\_\+\+P\+SF} & The input h psf \\
+\hline
+ & {\em output\+\_\+G} & The output g \\
+\hline
+\mbox{\tt in}  & {\em nsr} & The nsr\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The wnr filter. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classsubscriber__node_aa1a17de5fe19b124d6e62e691e508746}\label{classsubscriber__node_aa1a17de5fe19b124d6e62e691e508746}} 
+\index{subscriber\+\_\+node@{subscriber\+\_\+node}!draw\+Squares@{draw\+Squares}}
+\index{draw\+Squares@{draw\+Squares}!subscriber\+\_\+node@{subscriber\+\_\+node}}
+\subsubsection{\texorpdfstring{draw\+Squares()}{drawSquares()}}
+{\footnotesize\ttfamily cv\+::\+Mat subscriber\+\_\+node\+::draw\+Squares (\begin{DoxyParamCaption}\item[{cv\+::\+Mat \&}]{image,  }\item[{const std\+::vector$<$ std\+::vector$<$ cv\+::\+Point $>$ $>$ \&}]{squares }\end{DoxyParamCaption})}
+
+
+
+Draws squares. 
+
+
+\begin{DoxyParams}[1]{Parameters}
+ & {\em image} & The image \\
+\hline
+\mbox{\tt in}  & {\em squares} & The squares\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\{ image with sqaures\} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classsubscriber__node_a2ef8da4f3e87be4fec6dc52e0f359cd4}\label{classsubscriber__node_a2ef8da4f3e87be4fec6dc52e0f359cd4}} 
+\index{subscriber\+\_\+node@{subscriber\+\_\+node}!fftshift@{fftshift}}
+\index{fftshift@{fftshift}!subscriber\+\_\+node@{subscriber\+\_\+node}}
+\subsubsection{\texorpdfstring{fftshift()}{fftshift()}}
+{\footnotesize\ttfamily cv\+::\+Mat subscriber\+\_\+node\+::fftshift (\begin{DoxyParamCaption}\item[{const cv\+::\+Mat \&}]{input\+Img,  }\item[{cv\+::\+Mat \&}]{output\+Img }\end{DoxyParamCaption})}
+
+
+
+\{ Calculates F\+FT shift \} 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em input\+Img} & The input image \\
+\hline
+ & {\em output\+Img} & The output image\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\{ Image containing shift as pixel values \} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classsubscriber__node_a36eaa05a731a6cd5168c41f7cd2acb80}\label{classsubscriber__node_a36eaa05a731a6cd5168c41f7cd2acb80}} 
+\index{subscriber\+\_\+node@{subscriber\+\_\+node}!filter2\+D\+Freq@{filter2\+D\+Freq}}
+\index{filter2\+D\+Freq@{filter2\+D\+Freq}!subscriber\+\_\+node@{subscriber\+\_\+node}}
+\subsubsection{\texorpdfstring{filter2\+D\+Freq()}{filter2DFreq()}}
+{\footnotesize\ttfamily cv\+::\+Mat subscriber\+\_\+node\+::filter2\+D\+Freq (\begin{DoxyParamCaption}\item[{const cv\+::\+Mat \&}]{input\+Img,  }\item[{cv\+::\+Mat \&}]{output\+Img,  }\item[{const cv\+::\+Mat \&}]{H }\end{DoxyParamCaption})}
+
+
+
+\{ Applies 2D filter \} 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em input\+Img} & The input image \\
+\hline
+ & {\em output\+Img} & The output image \\
+\hline
+\mbox{\tt in}  & {\em H} & \{ filter size \}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\{ Filtered Image \} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classsubscriber__node_aa0685059ef9148803de8e8633f46765b}\label{classsubscriber__node_aa0685059ef9148803de8e8633f46765b}} 
+\index{subscriber\+\_\+node@{subscriber\+\_\+node}!find\+Squares@{find\+Squares}}
+\index{find\+Squares@{find\+Squares}!subscriber\+\_\+node@{subscriber\+\_\+node}}
+\subsubsection{\texorpdfstring{find\+Squares()}{findSquares()}}
+{\footnotesize\ttfamily std\+::vector$<$ std\+::vector$<$ cv\+::\+Point $>$ $>$ subscriber\+\_\+node\+::find\+Squares (\begin{DoxyParamCaption}\item[{const cv\+::\+Mat \&}]{image,  }\item[{std\+::vector$<$ std\+::vector$<$ cv\+::\+Point $>$$>$ \&}]{squares }\end{DoxyParamCaption})}
+
+
+
+\{ finds squares in image \} 
+
+
+\begin{DoxyParams}[1]{Parameters}
+\mbox{\tt in}  & {\em image} & The image \\
+\hline
+ & {\em squares} & The squares matrix (empty)\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\{ squares \} 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+/home/shivang/catkin\+\_\+ws/src/tag\+\_\+detector/include/tag\+\_\+detector.\+hpp\item 
+/home/shivang/catkin\+\_\+ws/src/tag\+\_\+detector/src/subscriber\+\_\+node.\+cpp\end{DoxyCompactItemize}

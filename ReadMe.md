@@ -14,6 +14,8 @@ This node also shows the computational time required to process each frame. The 
 It also includes a program to write video from the image frames saved in the package results.
 
 
+The Doxygen Documentation for this project can be found at [this](file:///home/shivang/catkin_ws/src/tag_detector/docs/html/annotated.html) link. 
+
 ## About Author
 
 __Mayank Pathak:__ Graduate Student in M.Eng., Robotics, working as Teaching Assistant for Grad. Level Robotics Course for Machine Learning at the University of Maryland, College Park. I am interested to pursue career in the field of Computer Vision, Machine Learning and related fields.
@@ -34,6 +36,14 @@ The UML diagrams for the project are as follows:
 ![class_diag](https://github.com/mayankpathak10/tag_detector/blob/master/UML/initial/tag_detector_Class_diagram.jpeg)
 
 
+## Deveopment Using Solo Iterative Process (SIP)
+In development of this software module Solo Interative Process (SIP) was followed. Using SIP this software module is divided into two parts: the product backlog, and code of the software.
+
+First, the product backlog was developed as per the requirements. From these entries, highest priority requirements were selected for the first iteration. In the product backlog, estimated time of completion was allotted to every task. Actual completion time was compared with estimated completion time and based on that, time allotment for future tasks was modified.
+
+After the planning was done, based on UML class diagram, stub classes were written followed by implementation and Documentation.
+
+Following is the link to the spreadsheet that contains detailed entries of the product backlog and error log:[Product Backlog](https://docs.google.com/spreadsheets/d/1IvdiBzc3T5-pWsjkV7SkqSRE5-VnDC9NLZS4jSi_JfM/edit?usp=sharing)
 
 
 ## Dependencies
