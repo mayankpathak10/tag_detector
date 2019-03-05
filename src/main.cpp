@@ -63,8 +63,6 @@ int main(int argc, char **argv) {
       n.advertiseService("/set_blur_window_size", set_window_size);
   ROS_INFO("Service server to Change gaussian kernel size created.");
 
-  // std::string video_source = "src/tag_detector/data/1.mp4";
-
   std::string path = ros::package::getPath("tag_detector"); //Returns path of the package
   std::string filePath = "/data/light.mp4";
   if (argc ==

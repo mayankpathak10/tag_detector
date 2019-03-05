@@ -32,3 +32,107 @@ The UML diagrams for the project are as follows:
 ![activity_diag](https://github.com/mayankpathak10/tag_detector/blob/master/UML/initial/tag_detector_ActivityDiagram.jpeg)
 ### UML Class Diagram
 ![class_diag](https://github.com/mayankpathak10/tag_detector/blob/master/UML/initial/tag_detector_Class_diagram.jpeg)
+
+
+
+
+## Dependencies
+- Ubuntu 16.04
+- ROS Kinetic
+- Catkin
+- OpenCV 3.4.1
+- Packages included in ROS Kinetic:	
+    - roscpp
+	- std_msgs
+	- genmsg
+	- geometry_msgs
+	- cv_bridge
+
+
+## Sample Images
+An image frame from input, after applying adaptive threshold and the resulting frame are shown below:
+
+![input_image](https://github.com/mayankpathak10/tag_detector/blob/video_write/results/input_frame.jpg)
+![thresh_image](https://github.com/mayankpathak10/tag_detector/blob/video_write/results/light_thresh.png)
+![Output_image](https://github.com/mayankpathak10/tag_detector/blob/video_write/results/frames/light/20.jpg)
+
+## How to build
+If you do not have a catkin workspace, in a new terminal:
+```
+mkdir -p ~/catkin_ws/src
+cd ~/catkin_ws/
+catkin_make
+source devel/setup.bash
+cd src/
+git clone https://github.com/mayankpathak10/tag_detector
+cd ..
+catkin_make
+```
+If you wish to run this code in an existing catkin workspace:
+```
+cd ~/catkin_ws/
+source devel/setup.bash
+cd src/
+git clone https://github.com/mayankpathak10/tag_detector
+cd ..
+catkin_make
+```
+
+## Demo
+
+After following the above build instructions:
+
+first run rosmaster from a terminal:
+```
+roscore
+```
+To run the demo, in a new terminal:
+```
+cd ~/catkin_ws/
+source devel/setup.bash
+rosrun tag_detector pub_node
+```
+This will run the publisher node which will read Normal lighting condition video. To change the video input, simply give argument with the above command as follows:
+
+```rosrun tag_detector pub_node 1```
+
+Argument `1` refers to light video and is Default. Argument `2` will run publisher with Dark lighting video.
+
+Now to subscriber Node, in a new terminal:
+```
+cd ~/catkin_ws/
+source devel/setup.bash
+rosrun tag_detector subs_node 
+```
+This will pop up two windows showing output frames.
+
+### Saving Video
+ To save video from the frames generated, in a new terminal:
+```
+rosrun tag_detector write_video
+```
+
+## Doxygen Documentation
+To generate Doxygen Documentation in HTML and LaTEX, follow the next steps:
+```
+cd <path to repository>
+mkdir <documentation_folder_name>
+cd <documentation_folder_name>
+doxygen -g <config_file_name>
+```
+Inside the configuration file, update:
+```
+PROJECT_NAME = 'project name'
+INPUT = ../agv_navigation ../include ../test
+```
+Doxygen files will be generated to /docs folder
+
+To view them in a browser:
+```
+cd docs
+cd html
+firefox index.html
+```
+## Known issues and Bugs
+* ROS node needs to be terminated using `Ctrl+C` after all video frames are read.
+
