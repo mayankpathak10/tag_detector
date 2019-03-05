@@ -25,7 +25,7 @@ SOFTWARE.
  *
  * @section DESCRIPTION
  *
- *  This file is the main file to implement the publisher node.
+ *  This file is a helper file to implement the publisher node.
  *
  * @dependencies: tag_detector.hpp.
  * @author Mayank Pathak

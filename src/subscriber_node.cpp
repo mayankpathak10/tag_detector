@@ -35,25 +35,16 @@ SOFTWARE.
 
 #include "../include/tag_detector.hpp"
 
-// cv::Mat subscriber_node::calcPSF(cv::Mat& outputImg, cv::Size filterSize,
-//                                  int R) {}
-// cv::Mat subscriber_node::fftshift(const cv::Mat& inputImg, cv::Mat&
-// outputImg) {
-// }
-// cv::Mat subscriber_node::filter2DFreq(const cv::Mat& inputImg,
-//                                       cv::Mat& outputImg, const cv::Mat& H)
-//                                       {}
-// cv::Mat subscriber_node::calcWnrFilter(const cv::Mat& input_h_PSF,
-//                                        cv::Mat& output_G, double nsr) {}
-
+// Pointer to convert image from ROS format 
 cv_bridge::CvImagePtr cv_ptr;
 cv::Mat sub_image;
 cv::Mat mask;
 cv::Mat eq_img;
-int R = 2;
-int snr = 3000;
-int z = 1;
-subscriber_node subscriber_node;
+int R = 2;  // Radius for Wiener Filer
+int snr = 3000;  // SNR for FFT
+int z = 1;  // index to save images
+subscriber_node subscriber_node;  // Class Object
+
 
 double subscriber_node::angle(cv::Point pt1, cv::Point pt2, cv::Point pt0) {
   double dx1 = pt1.x - pt0.x;
@@ -85,7 +76,7 @@ std::vector<std::vector<cv::Point> > subscriber_node::findSquares(
     // find contours and store them all as a list
     cv::Mat gray2;
     cv::cvtColor(gray, gray2, cv::COLOR_GRAY2BGR);
-    cv::imshow("view", gray);
+    cv::imshow("Threshold Image", gray);
     cv::findContours(gray, contours, CV_RETR_LIST, CV_CHAIN_APPROX_SIMPLE);
 
     std::vector<cv::Point> approx;
@@ -258,7 +249,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
     squares = subscriber_node.findSquares(mask, squares);
     cv::Mat Output = subscriber_node.drawSquares(Copy2, squares);
 
-    cv::imshow("view2", Output);
+    cv::imshow("Final Output", Output);
     auto s = std::to_string(z);
 
     std::string path = ros::package::getPath("tag_detector"); //Returns path of the package
