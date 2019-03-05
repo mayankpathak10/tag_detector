@@ -15,9 +15,9 @@ It also includes a program to write video from the image frames saved in the pac
 
 
 ## About Author
-```
+
 __Mayank Pathak:__ Graduate Student in M.Eng., Robotics, working as Teaching Assistant for Grad. Level Robotics Course for Machine Learning at the University of Maryland, College Park. I am interested to pursue career in the field of Computer Vision, Machine Learning and related fields.
-```
+
 ## Project Approach:
 1. Publisher Node is created.
 	A video recorded from the printout of Apriltags is loaded, frames extracted and then each frame is publised in order.  
