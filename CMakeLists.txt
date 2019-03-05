@@ -100,10 +100,15 @@ add_executable(pub_node src/main.cpp
 add_executable(subs_node src/subscriber_node.cpp )
 			  # include/gaussian_size.h)
 
+add_executable(write_video src/write_video.cpp )
+
 target_link_libraries(pub_node ${OpenCV_LIBS} 
 				  ${catkin_LIBRARIES})
 target_link_libraries(subs_node ${OpenCV_LIBS} 
 				  ${catkin_LIBRARIES})
+target_link_libraries(write_video ${OpenCV_LIBS} 
+          ${catkin_LIBRARIES})
+          
 ################################################
 ## Declare ROS messages, services and actions ##
 ################################################

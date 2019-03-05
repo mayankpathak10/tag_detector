@@ -38,18 +38,19 @@ SOFTWARE.
 #define INCLUDE_TAG_DETECTOR_HPP_
 
 #include <cv_bridge/cv_bridge.h>
+#include <ros/package.h>
 #include <image_transport/image_transport.h>
 #include <ctime>
 #include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgcodecs/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv2/videoio/videoio.hpp>
-#include <sstream>
-#include <string>
-#include <vector>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "tag_detector/gaussian_size.h"
@@ -65,16 +66,6 @@ class publisher_node {
   cv::Mat input_image;
 
  public:
-  /**
-   * @brief      Reads a frame.
-   *
-   * @param[in]  { frame number to read }
-   * @param[in]  { path of image to read }
-   *
-   * @return     { image frame }
-   */
-  cv::Mat readFrame(int, std::string);
-
   /**
    * @brief      { Applies gaussian blur to image }
    *

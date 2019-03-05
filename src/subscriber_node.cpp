@@ -104,7 +104,7 @@ std::vector<std::vector<cv::Point> > subscriber_node::findSquares(
       // area may be positive or negative - in accordance with the
       // contour orientation
       if (approx.size() == 4 && fabs(contourArea(cv::Mat(approx))) > 700 &&
-          fabs(contourArea(cv::Mat(approx))) < 4000 &&
+          fabs(contourArea(cv::Mat(approx))) < 10000 &&
           cv::isContourConvex(cv::Mat(approx))) {
         double maxCosine = 0;
 
@@ -143,7 +143,8 @@ cv::Mat subscriber_node::drawSquares(
   return image;
 }
 
-cv::Mat subscriber_node::calcPSF(cv::Mat& outputImg, cv::Size filterSize, int R) {
+cv::Mat subscriber_node::calcPSF(cv::Mat& outputImg, cv::Size filterSize,
+                                 int R) {
   cv::Mat h(filterSize, CV_32F, cv::Scalar(0));
   cv::Point point(filterSize.width / 2, filterSize.height / 2);
   cv::circle(h, point, R, 255, -1, 8);
@@ -172,8 +173,8 @@ cv::Mat subscriber_node::fftshift(const cv::Mat& inputImg, cv::Mat& outputImg) {
   return outputImg;
 }
 
-cv::Mat subscriber_node::filter2DFreq(const cv::Mat& inputImg, cv::Mat& outputImg,
-                     const cv::Mat& H) {
+cv::Mat subscriber_node::filter2DFreq(const cv::Mat& inputImg,
+                                      cv::Mat& outputImg, const cv::Mat& H) {
   cv::Mat planes[2] = {cv::Mat_<float>(inputImg.clone()),
                        cv::Mat::zeros(inputImg.size(), CV_32F)};
   cv::Mat complexI;
@@ -192,8 +193,8 @@ cv::Mat subscriber_node::filter2DFreq(const cv::Mat& inputImg, cv::Mat& outputIm
   return outputImg;
 }
 
-cv::Mat subscriber_node::calcWnrFilter(const cv::Mat& input_h_PSF, cv::Mat& output_G,
-                      double nsr) {
+cv::Mat subscriber_node::calcWnrFilter(const cv::Mat& input_h_PSF,
+                                       cv::Mat& output_G, double nsr) {
   cv::Mat h_PSF_shifted;
   subscriber_node::fftshift(input_h_PSF, h_PSF_shifted);
   cv::Mat planes[2] = {cv::Mat_<float>(h_PSF_shifted.clone()),
@@ -209,7 +210,6 @@ cv::Mat subscriber_node::calcWnrFilter(const cv::Mat& input_h_PSF, cv::Mat& outp
 
   return output_G;
 }
-
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
   std::vector<std::vector<cv::Point> > squares;
@@ -260,9 +260,14 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 
     cv::imshow("view2", Output);
     auto s = std::to_string(z);
-    cv::imwrite("src/tag_detector/frames/dark/" + s + ".jpg", Output);
+
+    std::string path = ros::package::getPath("tag_detector"); //Returns path of the package
+    std::string file_path = "/results/frames/";
+    std::string complete_path = path + file_path;
+
+    cv::imwrite(complete_path + s + ".jpg", Output);
     z += 1;
-    cv::waitKey(20);
+    cv::waitKey(1);
 
     std::clock_t c_end = std::clock();
 
@@ -280,9 +285,12 @@ int main(int argc, char** argv) {
   image_transport::ImageTransport it(nh);
   ROS_INFO("before imageCallback");
 
+  while (nh.ok()) {
   image_transport::Subscriber sub =
       it.subscribe("/image_raw", 1, imageCallback);
-  ROS_INFO("Came Out of imageCallback");
+  ROS_DEBUG("Came Out of imageCallback");
   ros::spin();
   cv::destroyAllWindows();
+}
+cv::destroyAllWindows();
 }

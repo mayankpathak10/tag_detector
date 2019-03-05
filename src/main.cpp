@@ -35,11 +35,10 @@ SOFTWARE.
 
 #include "../include/tag_detector.hpp"
 
-
 int kernel_size = 5;
 
-bool set_window_size(tag_detector::gaussian_size::Request  &req,  // NOLINT
-         tag_detector::gaussian_size::Response &res) {  // NOLINT
+bool set_window_size(tag_detector::gaussian_size::Request &req,     // NOLINT
+                     tag_detector::gaussian_size::Response &res) {  // NOLINT
   res.kernel_size = req.size;
   kernel_size = req.size;
   ROS_INFO("request: Gaussian Kernel Size = %ld", (int64)req.size);
@@ -47,10 +46,10 @@ bool set_window_size(tag_detector::gaussian_size::Request  &req,  // NOLINT
   return true;
 }
 
-
 int main(int argc, char **argv) {
+  int i = 1;
   publisher_node publisher_node;  // Class object created
-  sensor_msgs::ImagePtr msg;  // variable to store image for publishing
+  sensor_msgs::ImagePtr msg;      // variable to store image for publishing
 
   ros::init(argc, argv, "pub_node");  // Node name
   ros::NodeHandle n;                  // Node Handle
@@ -60,16 +59,30 @@ int main(int argc, char **argv) {
   image_transport::Publisher pub = it.advertise("/image_raw", 1);
   ROS_INFO_STREAM("Publisher for topic 'image_raw' created.");
 
-
   ros::ServiceServer service =
       n.advertiseService("/set_blur_window_size", set_window_size);
   ROS_INFO("Service server to Change gaussian kernel size created.");
 
-  std::string video_source =
-      "/home/shivang/catkin_ws/src/tag_detector/data/1.mp4";
+  std::string path = ros::package::getPath("tag_detector"); //Returns path of the package
+  std::string filePath = "/data/light.mp4";
+  if (argc ==
+      2) {  // Parsing argument which sets a flag for the video file to be read.
+    std::string fileNumber = argv[1];
+    if (fileNumber == "1") {
+        ROS_INFO("Reading video with Normal Lighting. To Select Night lighting video,set argv = 2");
+        filePath = "/data/light.mp4";
+    } else if (fileNumber == "2") {
+        ROS_INFO("Reading video with Dark Lighting. To Select Normal lighting video,set argv = 1");
+      filePath = "/data/dark.mp4";
+    }
+  }
 
-  ROS_DEBUG("Video Source Path: [%s]", video_source.c_str());
-  cv::VideoCapture cap(video_source);
+  std::string complete_path = path + filePath;
+  ROS_DEBUG("Video Source Path: [%s]", complete_path.c_str());
+  cv::VideoCapture cap(complete_path);
+
+  // ROS_DEBUG("Video Source Path: [%s]", video_source.c_str());
+  // cv::VideoCapture cap(video_source);
 
   if (!cap.isOpened()) {  // Check for invalid input
     ROS_ERROR("Could not open or find the image");
@@ -79,22 +92,35 @@ int main(int argc, char **argv) {
   int total_frames = cap.get(CV_CAP_PROP_FRAME_COUNT);
   ROS_INFO("Total frames in Video: %d", total_frames);
 
-  if (!ros::ok()) ROS_FATAL_STREAM("ROS node not running...");
-
+  // if (!ros::ok()) ROS_FATAL_STREAM("ROS node not running...");
+  cv::Mat frame;
   ros::Rate loop_rate(5);
-  for (int i = 1; i < 50; ++i) {
-    ROS_INFO("Reading Frame: %d , Gaussian Kernel Size: %d ", i, kernel_size);
+  while (ros::ok()) {
 
-    cv::Mat frame = publisher_node.readFrame(i, video_source);
+    ROS_INFO("Reading Frame: %d, Gaussian Kernel Size: %d ", i, kernel_size);
+    cap >> frame;
+    if(!frame.empty()){
+    cv::resize(frame, frame, cv::Size(), 0.50, 0.50);
     cv::Mat bw_image = publisher_node.apply_gaussian_blur(frame, kernel_size);
+        if (i == 50) {
+        auto s = std::to_string(i);
+        cv::imwrite(path +"/results/input_frame.jpg", frame);
+    }
 
+    i += 1;
     msg =
         cv_bridge::CvImage(std_msgs::Header(), "mono8", bw_image).toImageMsg();
     pub.publish(msg);
+    cv::waitKey(1);
+
+} else {
+    ROS_WARN("No Image Read! Press Ctrl+C");
+}
 
     ros::spinOnce();
-  }
+    loop_rate.sleep();
+    cv::destroyAllWindows();
+}
 
-  loop_rate.sleep();
   cap.release();
 }
